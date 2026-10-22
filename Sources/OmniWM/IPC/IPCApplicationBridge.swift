@@ -275,6 +275,8 @@ actor IPCApplicationBridge {
             return .failure(id: id, kind: kind, code: .windowActionFailed)
         case .invalidArguments:
             return .failure(id: id, kind: kind, code: .invalidArguments)
+        case let .hookDenied(reason):
+            return .failure(id: id, kind: kind, code: .hookDenied, reason: reason)
         }
     }
 

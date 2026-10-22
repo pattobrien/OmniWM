@@ -80,6 +80,10 @@ extension IPCJSONWriter {
         try self.value(value.kind)
         self.key("ok", &first)
         try self.value(value.ok)
+        if let fieldValue = value.reason {
+            self.key("reason", &first)
+            try self.value(fieldValue)
+        }
         if let fieldValue = value.result {
             self.key("result", &first)
             try self.value(fieldValue)
@@ -251,15 +255,6 @@ extension IPCJSONWriter {
         try self.value(value.kind)
         self.key("value", &first)
         try self.value(value.value)
-        end(125)
-    }
-
-    mutating func argument(_ name: StaticString, _ value: borrowing IPCSizeChange, _ first: inout Bool) throws {
-        self.key("arguments", &first)
-        begin(123)
-        var argumentFirst = true
-        self.key(name, &argumentFirst)
-        try self.value(value)
         end(125)
     }
 }

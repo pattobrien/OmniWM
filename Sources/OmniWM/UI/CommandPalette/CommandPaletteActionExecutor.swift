@@ -70,7 +70,8 @@ final class CommandPaletteActionExecutor {
                 case .workspaceAssignmentConflict,
                      .workspaceStateConflict,
                      .windowActionFailed,
-                     .invalidArguments:
+                     .invalidArguments,
+                     .hookDenied:
                     String(localized: "The command could not be completed.")
                 }
             }

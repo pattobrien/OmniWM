@@ -24,6 +24,22 @@ final class CLIRendererOutputTests: XCTestCase {
         )
     }
 
+    func testHookDeniedResponsePrintsReasonRejectsAndRoundTrips() throws {
+        let response = IPCResponse.failure(
+            id: "1",
+            kind: .command,
+            code: .hookDenied,
+            reason: "focus mode is on"
+        )
+
+        let output = try CLIRenderer.responseOutput(response, format: .text)
+        XCTAssertEqual(String(data: output.data, encoding: .utf8), "error: hook_denied: focus mode is on\n")
+        XCTAssertEqual(CLIRenderer.exitCode(for: response), .rejected)
+
+        let line = try IPCWire.encodeResponseLine(response, prettyPrinted: false)
+        XCTAssertEqual(try IPCWire.decodeResponse(from: line), response)
+    }
+
     func testTSVEscapesNewlineAndTabInWindowTitle() throws {
         let response = windowResponse(title: "Progress\tbar\r\nsecond")
         let output = try CLIRenderer.responseOutput(response, format: .tsv)

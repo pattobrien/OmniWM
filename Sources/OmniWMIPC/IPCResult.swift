@@ -297,6 +297,7 @@ public struct IPCResponse: Codable, Equatable, Sendable {
     public let ok: Bool
     public let status: IPCResponseStatus
     public let code: IPCErrorCode?
+    public let reason: String?
     public let result: IPCResult?
 
     public init(
@@ -306,6 +307,7 @@ public struct IPCResponse: Codable, Equatable, Sendable {
         ok: Bool,
         status: IPCResponseStatus,
         code: IPCErrorCode? = nil,
+        reason: String? = nil,
         result: IPCResult? = nil
     ) {
         self.version = version
@@ -314,6 +316,7 @@ public struct IPCResponse: Codable, Equatable, Sendable {
         self.ok = ok
         self.status = status
         self.code = code
+        self.reason = reason
         self.result = result
     }
 
@@ -331,8 +334,9 @@ public struct IPCResponse: Codable, Equatable, Sendable {
         kind: IPCResponseKind,
         status: IPCResponseStatus = .error,
         code: IPCErrorCode,
+        reason: String? = nil,
         result: IPCResult? = nil
     ) -> IPCResponse {
-        IPCResponse(id: id, kind: kind, ok: false, status: status, code: code, result: result)
+        IPCResponse(id: id, kind: kind, ok: false, status: status, code: code, reason: reason, result: result)
     }
 }
