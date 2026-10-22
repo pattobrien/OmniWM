@@ -22,6 +22,9 @@ extension WMController {
             surfaceReconciler.noteBorderChanged()
         }
         let changeSet = focusNotificationDispatcher.notifyFocusChangesIfNeeded()
+        if let transition = changeSet.workspaceTransition {
+            hookDispatcher.notify(WorkspaceChangeHookPayload(transition, workspaceManager: workspaceManager))
+        }
         if statusBarRefreshIsEnabled {
             refreshStatusBar()
         }

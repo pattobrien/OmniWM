@@ -28,10 +28,17 @@ extension Notification.Name {
 
 @MainActor
 final class FocusNotificationDispatcher {
+    struct WorkspaceTransition: Equatable {
+        let from: WorkspaceDescriptor.ID?
+        let to: WorkspaceDescriptor.ID?
+        let monitorId: Monitor.ID?
+    }
+
     struct ChangeSet: Equatable {
         let focusChanged: Bool
         let workspaceChanged: Bool
         let monitorChanged: Bool
+        let workspaceTransition: WorkspaceTransition?
     }
 
     weak var controller: WMController?
@@ -48,12 +55,18 @@ final class FocusNotificationDispatcher {
     @discardableResult
     func notifyFocusChangesIfNeeded() -> ChangeSet {
         guard let controller else {
-            return ChangeSet(focusChanged: false, workspaceChanged: false, monitorChanged: false)
+            return ChangeSet(
+                focusChanged: false,
+                workspaceChanged: false,
+                monitorChanged: false,
+                workspaceTransition: nil
+            )
         }
         let projection = controller.interactionWorkspaceProjection()
         let currentMonitorId = projection.monitor?.id
         let currentWorkspaceId = projection.workspace?.id
 
+        let previousWorkspaceId = lastNotifiedWorkspaceId
         let focusChanged = notifyWindowFocusIfNeeded(controller: controller)
         let workspaceChanged = notifyWorkspaceIfNeeded(currentWorkspaceId, controller: controller)
         let monitorChanged = notifyMonitorIfNeeded(currentMonitorId, controller: controller)
@@ -61,7 +74,10 @@ final class FocusNotificationDispatcher {
         return ChangeSet(
             focusChanged: focusChanged,
             workspaceChanged: workspaceChanged,
-            monitorChanged: monitorChanged
+            monitorChanged: monitorChanged,
+            workspaceTransition: workspaceChanged
+                ? WorkspaceTransition(from: previousWorkspaceId, to: currentWorkspaceId, monitorId: currentMonitorId)
+                : nil
         )
     }
 

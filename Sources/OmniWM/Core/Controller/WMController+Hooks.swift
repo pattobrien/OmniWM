@@ -40,6 +40,17 @@ extension HookWorkspaceRef {
     }
 }
 
+extension WorkspaceChangeHookPayload {
+    @MainActor
+    init(_ transition: FocusNotificationDispatcher.WorkspaceTransition, workspaceManager: WorkspaceManager) {
+        self.init(
+            from: transition.from.flatMap(workspaceManager.descriptor(for:)).map(HookWorkspaceRef.init),
+            to: transition.to.flatMap(workspaceManager.descriptor(for:)).map(HookWorkspaceRef.init),
+            monitorId: transition.monitorId?.displayId
+        )
+    }
+}
+
 extension CommandHookPayload {
     @MainActor
     init(_ descriptor: HookCommandDescriptor, controller: WMController) {

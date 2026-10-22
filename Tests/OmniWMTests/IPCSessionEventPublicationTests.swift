@@ -26,11 +26,16 @@ final class IPCSessionEventPublicationTests: XCTestCase {
 
         XCTAssertEqual(
             dispatcher.notifyFocusChangesIfNeeded(),
-            .init(focusChanged: false, workspaceChanged: true, monitorChanged: false)
+            .init(
+                focusChanged: false,
+                workspaceChanged: true,
+                monitorChanged: false,
+                workspaceTransition: .init(from: fixture.ws1, to: fixture.ws2, monitorId: fixture.monitor.id)
+            )
         )
         XCTAssertEqual(
             dispatcher.notifyFocusChangesIfNeeded(),
-            .init(focusChanged: false, workspaceChanged: false, monitorChanged: false)
+            .init(focusChanged: false, workspaceChanged: false, monitorChanged: false, workspaceTransition: nil)
         )
         XCTAssertEqual(fixture.controller.workspaceManager.nativeManagedFocusToken, fixture.token)
     }
@@ -45,7 +50,7 @@ final class IPCSessionEventPublicationTests: XCTestCase {
 
         XCTAssertEqual(
             dispatcher.notifyFocusChangesIfNeeded(),
-            .init(focusChanged: true, workspaceChanged: false, monitorChanged: false)
+            .init(focusChanged: true, workspaceChanged: false, monitorChanged: false, workspaceTransition: nil)
         )
     }
 
