@@ -146,10 +146,22 @@ final class HookRegistryTests: XCTestCase {
 
         XCTAssertEqual(
             json,
-            #"{"hook_event_name":"pre-workspace-activation","monitor_id":1,"source":"app-activation","#
+            #"{"active_workspace":null,"hook_event_name":"pre-workspace-activation","monitor_id":1,"#
+                + #""source":"app-activation","#
                 + #""window":{"app_name":"Terminal","bundle_id":"com.apple.Terminal","id":42,"pid":7,"#
                 + #""role":"AXWindow","subrole":null,"title":null},"#
                 + #""workspace":{"id":"00000000-0000-0000-0000-000000000001","name":"2"}}"#
+        )
+    }
+
+    func testMissingPayloadFieldsEncodeAsNull() throws {
+        let payload = WorkspaceChangeHookPayload(from: nil, to: nil, monitorId: nil)
+
+        let json = try String(decoding: HookEnvelope.encode(payload), as: UTF8.self)
+
+        XCTAssertEqual(
+            json,
+            #"{"from":null,"hook_event_name":"post-workspace-change","monitor_id":null,"to":null}"#
         )
     }
 

@@ -76,6 +76,19 @@ struct WorkspaceActivationHookPayload: BlockingHookPayload {
     var subject: HookMatchSubject {
         HookMatchSubject(bundleId: window.bundleId, title: window.title)
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case window, workspace, activeWorkspace, monitorId, source
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(window, forKey: .window)
+        try container.encode(workspace, forKey: .workspace)
+        try container.encode(activeWorkspace, forKey: .activeWorkspace)
+        try container.encode(monitorId, forKey: .monitorId)
+        try container.encode(source, forKey: .source)
+    }
 }
 
 struct WindowAdmissionHookPayload: BlockingHookPayload {
@@ -85,6 +98,16 @@ struct WindowAdmissionHookPayload: BlockingHookPayload {
     struct Proposed: Encodable, Sendable {
         let workspace: String?
         let float: Bool
+
+        private enum CodingKeys: String, CodingKey {
+            case workspace, float
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(workspace, forKey: .workspace)
+            try container.encode(float, forKey: .float)
+        }
     }
 
     let window: HookWindowFacts
@@ -93,6 +116,17 @@ struct WindowAdmissionHookPayload: BlockingHookPayload {
 
     var subject: HookMatchSubject {
         HookMatchSubject(bundleId: window.bundleId, title: window.title)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case window, proposed, activeWorkspace
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(window, forKey: .window)
+        try container.encode(proposed, forKey: .proposed)
+        try container.encode(activeWorkspace, forKey: .activeWorkspace)
     }
 }
 
@@ -113,6 +147,17 @@ struct CommandHookPayload: BlockingHookPayload {
     var subject: HookMatchSubject {
         HookMatchSubject(commandName: command.name)
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case command, focusedWindow, activeWorkspace
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(command, forKey: .command)
+        try container.encode(focusedWindow, forKey: .focusedWindow)
+        try container.encode(activeWorkspace, forKey: .activeWorkspace)
+    }
 }
 
 struct WorkspaceChangeHookPayload: PostHookPayload {
@@ -124,6 +169,17 @@ struct WorkspaceChangeHookPayload: PostHookPayload {
 
     var subject: HookMatchSubject {
         .none
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case from, to, monitorId
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(from, forKey: .from)
+        try container.encode(to, forKey: .to)
+        try container.encode(monitorId, forKey: .monitorId)
     }
 }
 
