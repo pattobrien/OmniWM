@@ -47,7 +47,7 @@ final class EventInterpreter: EventIntakeSink {
             controller.handleHookReply(reply)
 
         case let .hotkeyInvocation(invocation):
-            handleHotkeyInvocation(invocation, sequence: stamped.seq, controller: controller)
+            controller.commandHookGate.admit(.hotkey(invocation, seq: stamped.seq))
 
         case let .intentExpired(intentId, deadlineGeneration):
             controller.axEventHandler.handleIntentExpired(
@@ -56,7 +56,7 @@ final class EventInterpreter: EventIntakeSink {
             )
 
         case let .ipcCommand(intake):
-            intake.completion(intake.perform(controller))
+            controller.commandHookGate.admit(.ipc(intake))
 
         case let .mouseDragged(button, location):
             controller.mouseEventHandler.dispatchQueuedMouseDragged(at: location, button: button)
@@ -96,22 +96,6 @@ final class EventInterpreter: EventIntakeSink {
         case let .windowConstraintsResolved(fact):
             controller.layoutRefreshController.applyResolvedConstraints(fact)
         }
-    }
-
-    private func handleHotkeyInvocation(_ invocation: HotkeyInvocation, sequence: UInt64, controller: WMController) {
-        InputTrace.record(
-            "hotkey.dispatch.begin seq=\(sequence)"
-                + " source=\(TraceFormat.token(controller.workspaceManager.selectedManagedToken))"
-                + " repeat=\(invocation.trigger?.isRepeat.description ?? "unknown")"
-                + " cmd=\(invocation.command.displayName)"
-        )
-        let result = controller.commandHandler.handleHotkeyInvocation(invocation)
-        InputTrace.record(
-            "hotkey.dispatch.end seq=\(sequence)"
-                + " selected=\(TraceFormat.token(controller.workspaceManager.selectedManagedToken))"
-                + " pending=\(TraceFormat.token(controller.workspaceManager.pendingFocusedToken))"
-                + " result=\(result)"
-        )
     }
 
     private func handleSecureInputNotification(session: UInt32, controller: WMController) {

@@ -63,18 +63,6 @@ struct HookWorkspaceRef: Encodable, Sendable {
     let name: String
 }
 
-enum HookCommandSource: String, Encodable, Sendable {
-    case ipc
-    case hotkey
-    case shell
-}
-
-struct HookCommandDescriptor: Sendable, Equatable {
-    let name: String
-    let source: HookCommandSource
-    var arguments: [String: String] = [:]
-}
-
 struct WorkspaceActivationHookPayload: BlockingHookPayload {
     typealias Modification = Never
     static let event = HookEvent.preWorkspaceActivation

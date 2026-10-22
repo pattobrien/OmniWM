@@ -32,6 +32,7 @@ enum IntakeEvent: Sendable {
 struct IPCCommandIntake: Sendable {
     let perform: @MainActor @Sendable (WMController) -> ExternalCommandResult
     let completion: @MainActor @Sendable (ExternalCommandResult) -> Void
+    let command: HookCommandDescriptor?
 }
 
 struct MouseScrollIntake: Sendable {

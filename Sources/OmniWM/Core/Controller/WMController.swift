@@ -95,6 +95,8 @@ final class WMController {
     @ObservationIgnored
     private(set) lazy var eventInterpreter = EventInterpreter(controller: self)
     @ObservationIgnored
+    private(set) lazy var commandHookGate = CommandHookGate(controller: self)
+    @ObservationIgnored
     private(set) lazy var hookDispatcher = HookDispatcher { [weak self] reply in self?.handleHookReply(reply) }
     let focusPolicyEngine: FocusPolicyEngine
     let windowRuleEngine = WindowRuleEngine()

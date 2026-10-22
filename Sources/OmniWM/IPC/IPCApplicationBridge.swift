@@ -70,7 +70,7 @@ actor IPCApplicationBridge {
                 responseWithoutPayload(for: request)
             }
         case let .command(command):
-            let result = await commandResult { $0.handle(command) }
+            let result = await commandResult(HookCommandDescriptor(command, source: .ipc)) { $0.handle(command) }
             return Self.response(for: result, id: request.id, kind: .command)
         case let .capture(capture):
             return await Self.captureResponse(for: capture, id: request.id, controller: controller)
@@ -89,10 +89,10 @@ actor IPCApplicationBridge {
             }
             return await self.response(for: rule, id: request.id, ruleRouter: ruleRouter)
         case let .workspace(workspace):
-            let result = await commandResult { $0.handle(workspace) }
+            let result = await commandResult(HookCommandDescriptor(workspace, source: .ipc)) { $0.handle(workspace) }
             return Self.response(for: result, id: request.id, kind: .workspace)
         case let .window(window):
-            let result = await commandResult { $0.handle(window) }
+            let result = await commandResult(HookCommandDescriptor(window, source: .ipc)) { $0.handle(window) }
             return Self.response(for: result, id: request.id, kind: .window)
         case let .windowMark(windowMark):
             return await Self.windowMarkResponse(
@@ -159,6 +159,7 @@ actor IPCApplicationBridge {
     }
 
     private func commandResult(
+        _ command: HookCommandDescriptor?,
         _ handle: @escaping @MainActor @Sendable (IPCCommandRouter) -> ExternalCommandResult
     ) async -> ExternalCommandResult {
         let controller = controller
@@ -169,7 +170,8 @@ actor IPCApplicationBridge {
         return await withCheckedContinuation { continuation in
             let intake = IPCCommandIntake(
                 perform: perform,
-                completion: { continuation.resume(returning: $0) }
+                completion: { continuation.resume(returning: $0) },
+                command: command
             )
             if !EventIntake.post(.ipcCommand(intake)) {
                 Task { @MainActor in

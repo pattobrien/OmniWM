@@ -304,6 +304,7 @@ final class ServiceLifecycleManager {
 
         if !retainingAXWorkers { clearStoppedVisibility(controller) }
 
+        controller.commandHookGate.stop()
         controller.eventIntake.close()
         controller.factResolver.stop()
         controller.deadlineWheel.stop()

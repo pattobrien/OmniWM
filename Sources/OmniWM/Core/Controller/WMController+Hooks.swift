@@ -10,8 +10,43 @@ extension WMController {
             Log.hooks.debug("dropped activation hook reply \(id.raw) for \(token)")
         case let .windowAdmission(id, windowId, _):
             Log.hooks.debug("dropped admission hook reply \(id.raw) for \(windowId)")
-        case let .command(id, _):
-            Log.hooks.debug("dropped command hook reply \(id.raw)")
+        case let .command(id, decision):
+            commandHookGate.resume(id, decision: decision)
         }
+    }
+
+    var hookActiveWorkspace: HookWorkspaceRef? {
+        workspaceManager.interactionMonitorId
+            .flatMap { workspaceManager.activeWorkspace(on: $0) }
+            .map(HookWorkspaceRef.init)
+    }
+
+    func hookWindowFacts(for token: WindowToken) -> HookWindowFacts {
+        HookWindowFacts(
+            id: token.windowId,
+            pid: token.pid,
+            bundleId: axEventHandler.resolveBundleId(token.pid),
+            appName: appInfoCache.name(for: token.pid),
+            title: UInt32(exactly: token.windowId).flatMap { AXWindowService.cachedTitle(windowId: $0) },
+            role: nil,
+            subrole: nil
+        )
+    }
+}
+
+extension HookWorkspaceRef {
+    init(_ descriptor: WorkspaceDescriptor) {
+        self.init(id: descriptor.id, name: descriptor.name)
+    }
+}
+
+extension CommandHookPayload {
+    @MainActor
+    init(_ descriptor: HookCommandDescriptor, controller: WMController) {
+        self.init(
+            command: Command(name: descriptor.name, source: descriptor.source, arguments: descriptor.arguments),
+            focusedWindow: controller.workspaceManager.nativeManagedFocusToken.map(controller.hookWindowFacts(for:)),
+            activeWorkspace: controller.hookActiveWorkspace
+        )
     }
 }
