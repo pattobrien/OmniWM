@@ -15,6 +15,18 @@ extension WMController {
         }
     }
 
+    func updateHooks() {
+        let registry = HookRegistry(definitions: settings.hooks)
+        let diagnosticsChanged = registry.diagnostics != hookDispatcher.registry.diagnostics
+        hookDispatcher.replace(registry: registry)
+        for problem in registry.diagnostics {
+            Log.hooks.notice("\(problem)")
+        }
+        if diagnosticsChanged {
+            refreshDiagnosticsIssues()
+        }
+    }
+
     var hookActiveWorkspace: HookWorkspaceRef? {
         workspaceManager.interactionMonitorId
             .flatMap { workspaceManager.activeWorkspace(on: $0) }

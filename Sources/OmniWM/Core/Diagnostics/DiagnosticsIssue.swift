@@ -59,6 +59,7 @@ struct DiagnosticsIssue: Identifiable, Equatable {
         case settingsRecovered(reason: String, backupURL: URL)
         case settingsPersistenceBlocked(reason: String, backupURL: URL?)
         case settingsInvalidRejected(reason: String)
+        case hookConfiguration(problems: [String])
     }
 
     let kind: Kind
@@ -83,6 +84,7 @@ struct DiagnosticsIssue: Identifiable, Equatable {
         case .settingsRecovered: "settings-recovered"
         case .settingsPersistenceBlocked: "settings-persistence-blocked"
         case .settingsInvalidRejected: "settings-invalid-rejected"
+        case .hookConfiguration: "hook-configuration"
         }
     }
 
@@ -100,7 +102,8 @@ struct DiagnosticsIssue: Identifiable, Equatable {
              .settingsFileCorrupt,
              .settingsMigrated,
              .settingsRecovered,
-             .settingsInvalidRejected:
+             .settingsInvalidRejected,
+             .hookConfiguration:
             .warning
         }
     }
@@ -119,6 +122,7 @@ struct DiagnosticsIssue: Identifiable, Equatable {
         case .settingsRecovered: "Invalid settings recovered"
         case .settingsPersistenceBlocked: "Settings writes blocked"
         case .settingsInvalidRejected: "Invalid settings left untouched"
+        case .hookConfiguration: "Hooks will not run as written"
         }
     }
 
@@ -161,6 +165,8 @@ struct DiagnosticsIssue: Identifiable, Equatable {
                 + (backupURL.map { " The exact original bytes are at \($0.path)." } ?? "")
         case let .settingsInvalidRejected(reason):
             "OmniWM could not decode \(configPath) and left the file untouched: \(reason) The active settings were not changed."
+        case let .hookConfiguration(problems):
+            "settings.toml has [[hooks]] entries that cannot work: \(problems.joined(separator: "; "))."
         }
     }
 
@@ -197,6 +203,8 @@ struct DiagnosticsIssue: Identifiable, Equatable {
             "Resolve the reported schema or backup problem at \(configPath), then reload or restart OmniWM."
         case .settingsInvalidRejected:
             "Correct the reported value at \(configPath); OmniWM applies the file once it decodes. Saving from the Settings window first secures the rejected bytes as a recovery file."
+        case .hookConfiguration:
+            "Fix the matcher of each listed [[hooks]] entry in \(configPath)."
         }
     }
 
@@ -217,7 +225,8 @@ struct DiagnosticsIssue: Identifiable, Equatable {
              .settingsMigrated,
              .settingsRecovered,
              .settingsPersistenceBlocked,
-             .settingsInvalidRejected:
+             .settingsInvalidRejected,
+             .hookConfiguration:
             nil
         }
     }
@@ -229,7 +238,8 @@ struct DiagnosticsIssue: Identifiable, Equatable {
              .settingsMigrated,
              .settingsRecovered,
              .settingsPersistenceBlocked,
-             .settingsInvalidRejected:
+             .settingsInvalidRejected,
+             .hookConfiguration:
             true
         default:
             false
@@ -265,6 +275,7 @@ extension DiagnosticsIssue {
         case .settingsRecovered: String(localized: "Invalid settings recovered")
         case .settingsPersistenceBlocked: String(localized: "Settings writes blocked")
         case .settingsInvalidRejected: String(localized: "Invalid settings left untouched")
+        case .hookConfiguration: title
         }
     }
 
@@ -338,6 +349,8 @@ extension DiagnosticsIssue {
             return String(
                 localized: "OmniWM could not decode \(configPath) and left the file untouched: \(reason) The active settings were not changed."
             )
+        case .hookConfiguration:
+            return message
         }
     }
 
@@ -392,6 +405,8 @@ extension DiagnosticsIssue {
             String(
                 localized: "Correct the reported value at \(configPath); OmniWM applies the file once it decodes. Saving from the Settings window first secures the rejected bytes as a recovery file."
             )
+        case .hookConfiguration:
+            remediation
         }
     }
 

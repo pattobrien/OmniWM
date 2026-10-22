@@ -31,6 +31,7 @@ extension WMController {
         updateMonitorDwindleSettings()
         updateMonitorGapSettings()
         updateAppRules()
+        updateHooks()
 
         borderSettingsChanged()
         setOverviewEnabled(settings.overview.enabled)

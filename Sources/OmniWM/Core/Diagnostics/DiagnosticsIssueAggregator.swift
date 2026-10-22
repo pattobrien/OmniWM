@@ -42,6 +42,14 @@ enum DiagnosticsIssueAggregator {
             notice: controller.settings.configNotice
         ))
 
+        let hookProblems = controller.hookDispatcher.registry.diagnostics
+        if !hookProblems.isEmpty {
+            issues.append(DiagnosticsIssue(
+                kind: .hookConfiguration(problems: hookProblems),
+                configFileURL: controller.settings.settingsFileURL
+            ))
+        }
+
         return issues
     }
 }
