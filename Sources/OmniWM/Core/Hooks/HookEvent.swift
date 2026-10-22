@@ -91,27 +91,27 @@ struct WorkspaceActivationHookPayload: BlockingHookPayload {
     }
 }
 
+struct HookProposedAdmission: Encodable, Sendable {
+    let workspace: String?
+    let float: Bool
+
+    private enum CodingKeys: String, CodingKey {
+        case workspace, float
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(workspace, forKey: .workspace)
+        try container.encode(float, forKey: .float)
+    }
+}
+
 struct WindowAdmissionHookPayload: BlockingHookPayload {
     typealias Modification = WindowAdmissionModification
     static let event = HookEvent.preWindowAdmission
 
-    struct Proposed: Encodable, Sendable {
-        let workspace: String?
-        let float: Bool
-
-        private enum CodingKeys: String, CodingKey {
-            case workspace, float
-        }
-
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(workspace, forKey: .workspace)
-            try container.encode(float, forKey: .float)
-        }
-    }
-
     let window: HookWindowFacts
-    let proposed: Proposed
+    let proposed: HookProposedAdmission
     let activeWorkspace: HookWorkspaceRef?
 
     var subject: HookMatchSubject {
