@@ -8,8 +8,8 @@ extension WMController {
         switch reply {
         case let .workspaceActivation(id, token, decision):
             axEventHandler.handleActivationHookReply(id, token: token, decision: decision)
-        case let .windowAdmission(id, windowId, _):
-            Log.hooks.debug("dropped admission hook reply \(id.raw) for \(windowId)")
+        case let .windowAdmission(id, windowId, decision):
+            axEventHandler.handleAdmissionHookReply(id, windowId: windowId, decision: decision)
         case let .command(id, decision):
             commandHookGate.resume(id, decision: decision)
         }

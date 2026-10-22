@@ -287,7 +287,7 @@ extension AXEventHandler {
         case .running:
             guard schedule.trigger.priority >= state.trigger.priority else { return true }
             state.task?.cancel()
-            let attempt = schedule.trigger.priority == state.trigger.priority
+            let attempt = schedule.trigger.priority == state.trigger.priority && schedule.reason != .hookPending
                 ? state.attempt + 1
                 : state.attempt
             guard attempt <= Self.createdWindowRetryLimit else {
@@ -317,7 +317,7 @@ extension AXEventHandler {
         schedule: AdmissionRetrySchedule,
         windowId: UInt32
     ) -> Bool {
-        let attempt = (state?.attempt ?? 0) + 1
+        let attempt = (state?.attempt ?? 0) + (schedule.reason == .hookPending ? 0 : 1)
         guard attempt <= Self.createdWindowRetryLimit else {
             exhaustAdmissionRetry(state: state, schedule: schedule, windowId: windowId)
             return false

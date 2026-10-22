@@ -200,7 +200,7 @@ extension WMController {
             includeTitle: windowRuleEngine.requiresTitle(
                 for: appInfo?.bundleId,
                 appName: appInfo?.name
-            )
+            ) || hookDispatcher.registry.requiresTitle(for: appInfo?.bundleId)
         )
         return (
             WindowRuleFacts(

@@ -108,6 +108,7 @@ extension AXEventHandler {
                 }
             )
         )
+        forgetAdmissionHook(windowId: windowId)
 
         guard let candidate = prepareDestroyCandidate(
             windowInfo: windowInfo,

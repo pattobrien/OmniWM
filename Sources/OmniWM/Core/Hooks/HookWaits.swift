@@ -22,4 +22,6 @@ struct ActivationHookWait {
 
 struct HookWaits {
     var activation: [WindowToken: ActivationHookWait] = [:]
+    var admission: [UInt32: HookWaitID] = [:]
+    var admissionReplies: [UInt32: HookDecision<WindowAdmissionModification>] = [:]
 }
