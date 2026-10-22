@@ -50,4 +50,5 @@ enum Log {
     static let diagnostics = LogChannel(category: "diagnostics")
     static let shell = LogChannel(category: "shell")
     static let hiddenBar = LogChannel(category: "HiddenBar")
+    static let hooks = LogChannel(category: "hooks")
 }

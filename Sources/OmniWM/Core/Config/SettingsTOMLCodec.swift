@@ -46,7 +46,7 @@ enum SettingsTOMLCodec {
         var output = tree
         for key in [
             "monitorBarOverrides", "monitorOrientationOverrides", "monitorNiriOverrides",
-            "monitorDwindleOverrides", "monitorGapOverrides"
+            "monitorDwindleOverrides", "monitorGapOverrides", "hooks"
         ] where output[key] == .array([]) {
             output.removeValue(forKey: key)
         }
