@@ -43,6 +43,9 @@ final class EventInterpreter: EventIntakeSink {
         case let .display(event):
             controller.serviceLifecycleManager.monitorConfiguration.handle(event)
 
+        case let .hookDecided(reply):
+            controller.handleHookReply(reply)
+
         case let .hotkeyInvocation(invocation):
             handleHotkeyInvocation(invocation, sequence: stamped.seq, controller: controller)
 

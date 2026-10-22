@@ -10,6 +10,7 @@ enum IntakeEvent: Sendable {
     case application(ApplicationIntakeEvent)
     case activationFactsResolved(ActivationFacts)
     case focusedAdmissionRetryFactRequestSuperseded(AdmissionRetryExecution)
+    case hookDecided(HookReply)
     case activeSpaceChanged
     case cgs(CGSWindowEvent)
     case display(DisplayConfigurationObserver.DisplayEvent)
