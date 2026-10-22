@@ -116,6 +116,13 @@ extension AXEventHandler {
         ) else { return }
 
         endWindowCloseFocusRecovery(matching: wsId, reason: "accepted_managed_activation")
+        if gateTrackedActivation(
+            entry,
+            isWorkspaceActive: isWorkspaceActive,
+            requestDisposition: requestDisposition,
+            facts: facts,
+            appFullscreen: appFullscreen
+        ) { return }
         handleManagedAppActivation(
             entry: entry,
             isWorkspaceActive: isWorkspaceActive,

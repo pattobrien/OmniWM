@@ -280,6 +280,7 @@ extension AXEventHandler {
                 entry,
                 isWorkspaceActive: isWorkspaceActive,
                 activation: activation,
+                bindCurrentPidRequest: bindCurrentPidRequest,
                 controller: controller
             ) else { return true }
         }
@@ -338,6 +339,7 @@ extension AXEventHandler {
         _ entry: WindowState,
         isWorkspaceActive: Bool,
         activation: PendingFocusedManagedActivation,
+        bindCurrentPidRequest: Bool,
         controller: WMController
     ) -> Bool {
         if activation.origin == .retry,
@@ -350,6 +352,11 @@ extension AXEventHandler {
             source: activation.source,
             origin: activation.origin,
             isWorkspaceActive: isWorkspaceActive
+        ) && !gateFocusedAdmissionActivation(
+            entry,
+            isWorkspaceActive: isWorkspaceActive,
+            activation: activation,
+            bindCurrentPidRequest: bindCurrentPidRequest
         )
     }
 }

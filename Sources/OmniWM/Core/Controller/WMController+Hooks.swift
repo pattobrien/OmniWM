@@ -6,8 +6,8 @@ import Foundation
 extension WMController {
     func handleHookReply(_ reply: HookReply) {
         switch reply {
-        case let .workspaceActivation(id, token, _):
-            Log.hooks.debug("dropped activation hook reply \(id.raw) for \(token)")
+        case let .workspaceActivation(id, token, decision):
+            axEventHandler.handleActivationHookReply(id, token: token, decision: decision)
         case let .windowAdmission(id, windowId, _):
             Log.hooks.debug("dropped admission hook reply \(id.raw) for \(windowId)")
         case let .command(id, decision):
