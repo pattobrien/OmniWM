@@ -11,7 +11,7 @@ sidebar:
 
 ```json
 {
-  "version": 22,
+  "version": 23,
   "id": "<uuid>",
   "kind": "<ping|version|command|capture|query|rule|workspace|window|window-mark|window-gather|shell|subscribe>",
   "authorizationToken": "<token>",
@@ -203,7 +203,7 @@ Both fields are required. `from` is `workspace`, `monitor`, or `all`; `omniwmctl
 
 ```json
 {
-  "version": 22,
+  "version": 23,
   "id": "<request-id>",
   "ok": true,
   "kind": "<ping|version|command|capture|query|rule|workspace|window|window-mark|window-gather|shell|subscribe>",
@@ -215,7 +215,7 @@ Both fields are required. `from` is `workspace`, `monitor`, or `all`; `omniwmctl
 }
 ```
 
-Optional response fields are omitted when unavailable. For example, a successful response has no `code` key; it does not send `"code": null`.
+Optional response fields are omitted when unavailable. For example, a successful response has no `code` key; it does not send `"code": null`. A `hook_denied` failure adds a `reason` string next to `code`.
 
 A `window mark list` response has `kind: "window-mark"` and `result.kind: "window-marks"`. Its `result.payload.marks` array contains each mark's `name`, `id` (session-scoped opaque window id), `workspace` (`id`, `rawName`, `displayName`, optional `number`), `app` (`name`, optional `bundleId`), and optional window `title`. Other mark actions return `status: "executed"` without a result payload.
 
@@ -232,7 +232,7 @@ Authorization, protocol, validation, and routing failures keep the originating r
 
 ```json
 {
-  "version": 22,
+  "version": 23,
   "id": "<request-id>",
   "ok": false,
   "kind": "query",
@@ -249,7 +249,7 @@ Events are sent on subscription connections after the initial response.
 
 ```json
 {
-  "version": 22,
+  "version": 23,
   "id": "<event-id>",
   "kind": "event",
   "channel": "focus",
@@ -296,6 +296,7 @@ This envelope is produced locally by the CLI, so it does not include IPC fields 
 | `unauthorized` | Missing or invalid authorization token |
 | `stale_window_id` | Well-formed window ID belongs to a different IPC session |
 | `not_found` | Target window, workspace, monitor, or rule does not exist |
+| `hook_denied` | A `pre-command` hook denied the command; `reason` carries the hook's reason |
 | `window_action_failed` | The requested close, mark focus, or summon could not complete |
 | `no_change` | Request resolved to the current state (workspace already active and holding keyboard focus, window already on the target, nothing to raise or rescue); status is `ignored`. `switch-workspace`, `switch-workspace slot`, `switch-workspace anywhere`, and `workspace focus-name` return `executed` instead when the workspace is already visible but keyboard focus must be handed back to it |
 | `workspace_assignment_conflict` | Configured monitor assignment prevents the requested workspace move |

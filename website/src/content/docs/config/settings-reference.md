@@ -489,6 +489,40 @@ minHeight = 220.0
 minWidth = 574.0
 ```
 
+## hooks
+
+Array of [hooks](/features/hooks/). Each entry names an event, an optional matcher, and the commands to run. The default is no hooks, and OmniWM leaves an empty `hooks` array out of the file it writes. Unreleased: available when building from `main`.
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `event` | string | `pre-workspace-activation`, `pre-window-admission`, `pre-command`, or `post-workspace-change`. |
+| `matcher` *(optional)* | table | Table with any of `bundleId`, `titleRegex`, and `commandName`. Every key you set must match. Without a matcher, the hook runs for every occurrence of the event. You can write it inline; OmniWM writes it back as a `[hooks.matcher]` sub-table. |
+| `matcher.bundleId` *(optional)* | string | App bundle ID, matched exactly and ignoring case. `pre-workspace-activation` and `pre-window-admission` only. |
+| `matcher.titleRegex` *(optional)* | string | Regex matched anywhere in the window title. `pre-workspace-activation` and `pre-window-admission` only. |
+| `matcher.commandName` *(optional)* | string | Regex matched anywhere in the command name. `pre-command` only. |
+| `commands` | array of tables | The `[[hooks.commands]]` entries, run in order. |
+
+Each `[[hooks.commands]]` entry takes these keys.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `command` | string | none | Shell command line. OmniWM runs it with `/bin/sh -c`. |
+| `timeoutMs` *(optional)* | integer | `500` | Milliseconds before OmniWM stops the command and counts the run as a failure. |
+| `onFailure` *(optional)* | string | `allow` | `allow` or `deny`. Decides whether a failed blocking hook lets the action proceed or blocks it. `post-workspace-change` ignores it. |
+
+A matcher key that the event cannot supply, or an invalid regex, makes OmniWM skip that hook and report it in Diagnostics.
+
+```toml
+[[hooks]]
+event = "pre-command"
+matcher = { commandName = "^close-focused-window$" }
+
+[[hooks.commands]]
+command = "~/.config/omniwm/hooks/protect.sh"
+timeoutMs = 150
+onFailure = "deny"
+```
+
 ## Per-monitor overrides
 
 Five arrays hold per-monitor exceptions to the global tables. Every entry requires `monitorName`. Use the display’s `monitorDisplayUUID`; for a display without a UUID, supply both `monitorDisplayId` and `monitorName`. A name alone does not match a display. All entries except orientation also carry an `id` UUID identifying the override row, not the display. Override keys are all optional — an omitted key falls back to the corresponding global setting. All five arrays default to empty. Custom routing grids live separately in [`routing.arrangements`](#routing).

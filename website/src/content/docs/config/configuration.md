@@ -89,4 +89,5 @@ The full schema is documented key by key in the [Settings Reference](/config/set
 | [`[[hotkeys]]`](/config/settings-reference/#hotkeys) | One entry per assignable action |
 | [`[[workspaces]]`](/config/settings-reference/#workspaces) | Workspace definitions |
 | [`[[appRules]]`](/config/settings-reference/#apprules) | Per-app window rules |
+| [`[[hooks]]`](/config/settings-reference/#hooks) | Scripts that gate workspace activation, window admission, and commands, or run after a workspace change |
 | [`[[monitor*Overrides]]`](/config/settings-reference/#per-monitor-overrides) | Per-monitor bar, orientation, Niri, Dwindle, and gap overrides |
