@@ -35,11 +35,22 @@ extension HookCommandDescriptor {
 
     private static func scalarArguments(of request: some Encodable) -> [String: String] {
         guard let data = try? JSONEncoder().encode(request),
-              let fields = try? JSONDecoder().decode([String: ScalarArgument].self, from: data)
+              let fields = try? JSONDecoder().decode([String: RequestField].self, from: data)
         else { return [:] }
         return fields.reduce(into: [:]) { arguments, field in
-            guard field.key != "name", let text = field.value.text else { return }
-            arguments[snakeCased(field.key)] = text
+            switch (field.key, field.value) {
+            case ("name", _):
+                return
+            case let (key, .scalar(text)):
+                arguments[snakeCased(key)] = text
+            case let ("arguments", .object(nested)):
+                for (key, value) in nested {
+                    if let text = value.text { arguments[snakeCased(key)] = text }
+                }
+            case (_, .object),
+                 (_, .other):
+                return
+            }
         }
     }
 
@@ -50,6 +61,23 @@ extension HookCommandDescriptor {
             } else {
                 result.append(character)
             }
+        }
+    }
+}
+
+private enum RequestField: Decodable {
+    case scalar(String)
+    case object([String: ScalarArgument])
+    case other
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let text = try ScalarArgument(from: decoder).text {
+            self = .scalar(text)
+        } else if let nested = try? container.decode([String: ScalarArgument].self) {
+            self = .object(nested)
+        } else {
+            self = .other
         }
     }
 }
