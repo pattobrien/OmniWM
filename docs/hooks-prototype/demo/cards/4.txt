@@ -1,0 +1,3 @@
+Send this window to the logs workspace, but do not take me there
+Event: pre-window-admission. logs is workspace 3, so the hook answers "3"
+Watch: a TextEdit file named [logs] opens in the background and never lands on 1

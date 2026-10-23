@@ -1,0 +1,3 @@
+Ask me before a window joins the workspace I am looking at
+Event: pre-window-admission
+Watch: a dialog asks, I click Allow, and Preview tiles at the right end

@@ -1,0 +1,1 @@
+Close: the hook allowed it, but OmniWM refused with workspace_state_conflict, so the window stayed.

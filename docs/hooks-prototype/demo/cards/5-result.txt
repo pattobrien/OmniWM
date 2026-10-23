@@ -1,0 +1,1 @@
+The hook ran after each switch. Notification banners do not render on this devbox, so it writes to the narration pane.

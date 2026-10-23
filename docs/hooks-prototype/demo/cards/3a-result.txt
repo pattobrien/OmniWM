@@ -1,0 +1,1 @@
+Keep: the hook exited 2, OmniWM skipped the close, and omniwmctl printed the reason.

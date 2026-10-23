@@ -1,0 +1,43 @@
+[[hooks]]
+event = "pre-window-admission"
+matcher = { bundleId = "com.apple.Preview" }
+
+[[hooks.commands]]
+command = "~/demo-v2/hooks/ask-admit.sh"
+timeoutMs = 30000
+onFailure = "deny"
+
+[[hooks]]
+event = "pre-workspace-activation"
+matcher = { bundleId = "com.apple.Safari" }
+
+[[hooks.commands]]
+command = "~/demo-v2/hooks/stay-put.sh"
+timeoutMs = 500
+
+[[hooks]]
+event = "pre-command"
+matcher = { commandName = "^close-focused-window$" }
+
+[[hooks.commands]]
+command = "~/demo-v2/hooks/confirm-close.sh"
+timeoutMs = 30000
+onFailure = "deny"
+
+[[hooks]]
+event = "pre-window-admission"
+
+[hooks.matcher]
+bundleId = "com.apple.TextEdit"
+titleRegex = '\[logs\]'
+
+[[hooks.commands]]
+command = "~/demo-v2/hooks/route-logs.sh"
+timeoutMs = 500
+
+[[hooks]]
+event = "post-workspace-change"
+
+[[hooks.commands]]
+command = "~/demo-v2/hooks/announce.sh"
+timeoutMs = 3000
