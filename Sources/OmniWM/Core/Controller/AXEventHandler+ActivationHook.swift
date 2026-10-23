@@ -153,7 +153,9 @@ extension AXEventHandler {
             )
         )
         Log.hooks.notice("pre-workspace-activation denied for \(entry.token): \(reason.text)")
-        guard !controller.shouldSuppressManagedFocusRecovery,
+        let deniedAppHoldsFocus = controller.workspaceManager.externalFocusIdentity?.pid == entry.pid
+        guard deniedAppHoldsFocus || !controller.shouldSuppressManagedFocusRecovery,
+              controller.focusPolicyEngine.evaluate(.managedFocusRecovery).allowsFocusChange,
               !controller.isLockScreenActive,
               let monitorId = controller.workspaceManager.monitorId(for: entry.workspaceId),
               let activeWorkspaceId = controller.workspaceManager.activeWorkspace(on: monitorId)?.id
