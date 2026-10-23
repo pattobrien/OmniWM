@@ -78,22 +78,24 @@ extension AXEventHandler {
         let app = NSRunningApplication(processIdentifier: token.pid)
         let bundleId = resolveBundleId(token.pid) ?? app?.bundleIdentifier
         let matchingWindowInfo = WMController.exactWindowServerInfo(windowInfo, for: token)
-        let evaluation = controller.evaluateWindowDisposition(
+        var evaluation = controller.evaluateWindowDisposition(
             axRef: axRef,
             pid: token.pid,
             windowInfo: matchingWindowInfo,
             windowServerLookupAttempted: true
         )
+        switch admissionHookDecision(for: evaluation, windowId: windowId, controller: controller) {
+        case .pending: return .pending(token: token, axRef: axRef, reason: .hookPending)
+        case .denied: return .ignored(token: token, reason: .hookDenied)
+        case let .decided(decision): evaluation.decision = decision
+        }
         let facts = ClassifiedCreateFacts(
             identity: identity, axPid: axPid, bundleId: bundleId,
             windowInfo: matchingWindowInfo, evaluation: evaluation
         )
         traceCreateClassification(facts, controller: controller)
 
-        let trackedMode = controller.trackedModeForLifecycle(
-            decision: evaluation.decision,
-            existingEntry: nil
-        )
+        let trackedMode = controller.trackedModeForLifecycle(decision: evaluation.decision, existingEntry: nil)
 
         guard let trackedMode else {
             if evaluation.decision.disposition == .undecided {
@@ -330,6 +332,7 @@ extension AXEventHandler {
                 reason: reason.rawValue
             )
         )
+        forgetAdmissionHook(windowId: windowId)
         cancelCreatedWindowRetry(windowId: windowId)
         discardCreatePlacementContext(windowId: windowId)
         rejectDeferredReplacement(windowId: windowId)

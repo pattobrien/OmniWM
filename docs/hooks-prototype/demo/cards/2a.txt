@@ -1,0 +1,3 @@
+Stop an app from stealing my screen
+Today, with no hook, the window manager follows the activated app
+Watch: Safari activates and the screen jumps to workspace 2

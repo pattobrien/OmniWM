@@ -16,7 +16,7 @@ extension WMController {
     struct WindowDecisionEvaluation {
         let token: WindowToken
         let facts: WindowRuleFacts
-        let decision: WindowDecision
+        var decision: WindowDecision
         let appFullscreen: Bool
         let manualOverride: ManualWindowOverride?
         let admissionGeometry: WindowAdmissionGeometryEvidence?

@@ -1,0 +1,1 @@
+With no hook, OmniWM followed Safari and pulled you off workspace 1.

@@ -10,6 +10,7 @@ enum IntakeEvent: Sendable {
     case application(ApplicationIntakeEvent)
     case activationFactsResolved(ActivationFacts)
     case focusedAdmissionRetryFactRequestSuperseded(AdmissionRetryExecution)
+    case hookDecided(HookReply)
     case activeSpaceChanged
     case cgs(CGSWindowEvent)
     case display(DisplayConfigurationObserver.DisplayEvent)
@@ -31,6 +32,7 @@ enum IntakeEvent: Sendable {
 struct IPCCommandIntake: Sendable {
     let perform: @MainActor @Sendable (WMController) -> ExternalCommandResult
     let completion: @MainActor @Sendable (ExternalCommandResult) -> Void
+    let command: HookCommandDescriptor?
 }
 
 struct MouseScrollIntake: Sendable {

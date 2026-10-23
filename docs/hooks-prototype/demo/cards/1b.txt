@@ -1,0 +1,3 @@
+Ask me before a window joins the workspace I am looking at
+Event: pre-window-admission
+Watch: this time I click Deny, and the row keeps its 2 windows

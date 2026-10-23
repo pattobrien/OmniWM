@@ -4,6 +4,15 @@
 import Foundation
 
 extension IPCJSONWriter {
+    mutating func argument(_ name: StaticString, _ value: borrowing IPCSizeChange, _ first: inout Bool) throws {
+        self.key("arguments", &first)
+        begin(123)
+        var argumentFirst = true
+        self.key(name, &argumentFirst)
+        try self.value(value)
+        end(125)
+    }
+
     mutating func arguments(_ value: borrowing IPCSizingCommand, _ first: inout Bool) throws {
         switch value {
         case let .setContainerPrimarySpan(change):

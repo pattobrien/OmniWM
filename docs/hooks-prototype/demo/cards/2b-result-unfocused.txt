@@ -1,0 +1,1 @@
+The hook kept workspace %s on screen, but the keystrokes went to %s, not Terminal.

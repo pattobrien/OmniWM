@@ -752,7 +752,8 @@ final class EventIntakeReplayTests: XCTestCase {
                     }
                     return .executed
                 },
-                completion: { _ in }
+                completion: { _ in },
+                command: nil
             )
         )
         let expiryEvent = IntakeEvent.nativeFullscreenTransitionExpired(

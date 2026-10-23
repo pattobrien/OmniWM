@@ -1,0 +1,3 @@
+Confirm before closing a window I care about
+Event: pre-command, for close-focused-window
+Watch: I click Keep, and 'unsaved draft' stays open

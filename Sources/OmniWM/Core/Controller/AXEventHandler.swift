@@ -28,7 +28,7 @@ final class AXEventHandler {
     var nextAdmissionRetryGeneration: UInt64 = 1
     var nextAdmissionRetryExecutionOwner: UInt64 = 1
     private var nextActivationObservationGeneration: UInt64 = 1
-    private var latestActivationObservationGeneration: UInt64 = 0
+    private(set) var latestActivationObservationGeneration: UInt64 = 0
     var latestNativeActivationPID: pid_t?
     var terminalFrameFailureStateByWindowId: [Int: TerminalFrameFailureState] = [:]
     var admissionQuarantineByWindowId: [Int: AdmissionQuarantine] = [:]

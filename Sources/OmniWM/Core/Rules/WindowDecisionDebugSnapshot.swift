@@ -36,6 +36,8 @@ struct WindowDecisionDebugSnapshot: Equatable, Sendable {
             "builtInRule(\(name))"
         case .heuristic:
             "heuristic"
+        case .hook:
+            "hook"
         }
     }
 

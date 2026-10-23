@@ -1,0 +1,1 @@
+The hook answered {"workspace": "3"}, so the window went to logs while you stayed on 1.

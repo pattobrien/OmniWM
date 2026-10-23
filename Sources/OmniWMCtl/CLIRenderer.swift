@@ -76,6 +76,7 @@ enum CLIRenderer {
              .invalidMark,
              .ineligibleWindow,
              .doesNotFit,
+             .hookDenied,
              .invalidArguments,
              .invalidRequest,
              .none:
@@ -231,6 +232,10 @@ enum CLIRenderer {
            case let .version(version) = result.payload
         {
             return "error: protocol_mismatch (server protocol \(version.protocolVersion), app \(version.appVersion ?? "unknown"))"
+        }
+
+        if let code = response.code, let reason = response.reason {
+            return "\(response.status.rawValue): \(code.rawValue): \(reason)"
         }
 
         if let code = response.code {

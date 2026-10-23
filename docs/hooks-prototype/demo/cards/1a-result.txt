@@ -1,0 +1,1 @@
+Allowed: the hook exited 0 and Preview tiled at the right end, 2 windows became 3.

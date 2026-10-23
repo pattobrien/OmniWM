@@ -1,0 +1,1 @@
+Close: the hook exited 0 and OmniWM closed 'unsaved draft'.

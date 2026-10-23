@@ -185,6 +185,9 @@ extension AXEventHandler {
                 axRef: trackedEntry.axRef
             )
         )
+        if let windowId = UInt32(exactly: trackedEntry.windowId) {
+            forgetAdmissionHook(windowId: windowId)
+        }
 
         return trackedEntry
     }

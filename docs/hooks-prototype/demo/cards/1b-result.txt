@@ -1,0 +1,1 @@
+Denied: OmniWM left the window unmanaged, the script closed it, and the row stayed at 2.

@@ -41,6 +41,7 @@ extension WorkspaceBarManager {
     func performShellRequest(_ request: ShellRequest, origin: ShellCommandOrigin) {
         guard let controller else { return }
         let route: @MainActor @Sendable (IPCCommandRouter) -> ExternalCommandResult
+        let descriptor: HookCommandDescriptor
         switch request {
         case .statusMenu:
             openStatusMenu(from: origin, controller: controller)
@@ -56,8 +57,12 @@ extension WorkspaceBarManager {
                 showHiddenBarMenu(key, origin: origin)
             }
             return
-        case let .command(command): route = { $0.handle(command) }
-        case let .window(window): route = { $0.handle(window) }
+        case let .command(command):
+            route = { $0.handle(command) }
+            descriptor = HookCommandDescriptor(command, source: .shell)
+        case let .window(window):
+            route = { $0.handle(window) }
+            descriptor = HookCommandDescriptor(window, source: .shell)
         }
         if let click = Self.barClick(for: request, sessionToken: shellSessionToken),
            performBarClick(click, monitor: origin.monitor, controller: controller)
@@ -74,7 +79,7 @@ extension WorkspaceBarManager {
             guard let widget, let command, result != .executed, result != .noChange else { return }
             self?.shellHost?.logCommandFailure("\"\(command)\" failed: \(result)", widget: widget)
         }
-        if !EventIntake.post(.ipcCommand(IPCCommandIntake(perform: perform, completion: report))) {
+        if !EventIntake.post(.ipcCommand(IPCCommandIntake(perform: perform, completion: report, command: descriptor))) {
             report(perform(controller))
         }
     }

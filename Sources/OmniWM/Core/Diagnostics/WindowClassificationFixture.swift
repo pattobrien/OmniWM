@@ -135,6 +135,7 @@ struct WindowClassificationDecisionDTO: Codable, Equatable, Sendable {
         switch source {
         case let .builtInRule(name): "builtInRule(\(name))"
         case .heuristic: "heuristic"
+        case .hook: "hook"
         case .manualOverride: "manualOverride"
         case let .userRule(ruleId): "userRule(\(ruleId.uuidString))"
         }

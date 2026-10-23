@@ -203,6 +203,7 @@ extension AXEventHandler {
     ) {
         identityAliasesByWindowId.removeValue(forKey: Int(windowId))
         admissionQuarantineByWindowId.removeValue(forKey: Int(windowId))
+        forgetAdmissionHook(windowId: windowId)
         clearTerminalFrameFailure(windowId: Int(windowId))
         guard let resolvedToken else { return }
         cancelCreatedWindowRetry(windowId: windowId)

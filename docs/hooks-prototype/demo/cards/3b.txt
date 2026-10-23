@@ -1,0 +1,3 @@
+Confirm before closing a window I care about
+Event: pre-command, for close-focused-window
+Watch: this time I click Close, and the window closes

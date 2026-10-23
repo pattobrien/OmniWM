@@ -4,7 +4,7 @@
 import Foundation
 
 public enum OmniWMIPCProtocol {
-    public static let version = 22
+    public static let version = 23
 }
 
 public struct IPCNoPayload: Codable, Equatable, Sendable {
@@ -104,6 +104,7 @@ public enum IPCErrorCode: String, Codable, Equatable, Sendable, Error {
     case invalidMark = "invalid_mark"
     case ineligibleWindow = "ineligible_window"
     case doesNotFit = "does_not_fit"
+    case hookDenied = "hook_denied"
     case internalError = "internal_error"
 }
 

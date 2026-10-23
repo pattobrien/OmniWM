@@ -116,6 +116,8 @@ final class SettingsStore {
         }
     }
 
+    var hooks = SettingsStore.defaultExport.hooks
+
     var preventSleepEnabled = SettingsStore.defaultExport.preventSleepEnabled {
         didSet { scheduleSave() }
     }
@@ -444,6 +446,7 @@ extension SettingsStore {
         workspaceBar.applyAppearance(export.workspaceBar, monitorOverrides: export.monitorBarSettings)
 
         appRules = export.appRules
+        hooks = export.hooks
         monitors.orientationOverrides = export.monitorOrientationSettings
         niri.monitorOverrides = export.monitorNiriSettings
 

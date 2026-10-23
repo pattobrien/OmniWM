@@ -15,4 +15,5 @@ enum ExternalCommandResult: Equatable, Sendable, Error {
     case noChange
     case windowActionFailed
     case invalidArguments
+    case hookDenied(reason: String)
 }

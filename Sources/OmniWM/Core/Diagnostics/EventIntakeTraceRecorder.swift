@@ -66,6 +66,7 @@ enum EventIntakeTrace {
             Identity(kind: "admission-superseded", windowId: Int(execution.windowId))
         case .activeSpaceChanged: Identity(kind: "active-space")
         case .display: Identity(kind: "display")
+        case .hookDecided: Identity(kind: "hook-decided")
         case .hotkeyInvocation: Identity(kind: "hotkey")
         case .intentExpired: Identity(kind: "intent-expired")
         case .ipcCommand: Identity(kind: "ipc-command")

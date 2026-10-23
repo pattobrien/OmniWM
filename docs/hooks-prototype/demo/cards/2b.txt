@@ -1,0 +1,3 @@
+Stop an app from stealing my screen
+Event: pre-workspace-activation
+Watch: the screen stays on workspace 1 and my typing still lands in Terminal

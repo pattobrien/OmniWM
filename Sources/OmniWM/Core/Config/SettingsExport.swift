@@ -59,6 +59,8 @@ struct SettingsExport: Equatable {
     var appearanceMode: AppearanceMode
     var tabRailAppIcons: Bool
 
+    var hooks: [HookDefinition] = []
+
     struct Island: Codable, Equatable {
         var enabled: Bool
 

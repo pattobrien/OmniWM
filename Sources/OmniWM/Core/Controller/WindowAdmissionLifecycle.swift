@@ -10,6 +10,7 @@ enum WindowAdmissionPendingReason: String, Equatable {
     case factsDeferred = "facts_deferred"
     case windowServerEvidenceMissing = "window_server_evidence_missing"
     case degenerateGeometry = "degenerate_geometry"
+    case hookPending = "hook_pending"
 
     var hasVerifiedExternalWindowIdentity: Bool {
         self != .windowServerEvidenceMissing
@@ -23,6 +24,7 @@ enum WindowAdmissionRejectionReason: String, Equatable {
     case quarantined = "quarantined"
     case retryExhausted = "retry_exhausted"
     case terminalFrameRefusal = "terminal_frame_refusal"
+    case hookDenied = "hook_denied"
 }
 
 enum ActivationRetryReason: String, Equatable {

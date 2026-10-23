@@ -16,6 +16,7 @@ enum WindowDecisionSource: Equatable, Sendable {
     case userRule(UUID)
     case builtInRule(String)
     case heuristic
+    case hook
 }
 
 enum WindowDecisionLayoutKind: String, Equatable, Sendable {
@@ -112,7 +113,8 @@ struct WindowDecision: Equatable, Sendable {
     var reflectsExplicitUserIntent: Bool {
         switch source {
         case .manualOverride,
-             .userRule:
+             .userRule,
+             .hook:
             true
         case .builtInRule,
              .heuristic:
@@ -127,6 +129,20 @@ struct WindowDecision: Equatable, Sendable {
     @MainActor
     var isUnprovenIndependentRootDecision: Bool {
         source == .builtInRule(WindowRuleEngine.unprovenIndependentRootRuleName)
+    }
+
+    func applying(_ modification: WindowAdmissionModification) -> WindowDecision {
+        WindowDecision(
+            disposition: modification.float.map { $0 ? .floating : .managed } ?? disposition,
+            source: .hook,
+            layoutDecisionKind: layoutDecisionKind,
+            workspaceName: modification.workspace ?? workspaceName,
+            ruleEffects: ruleEffects,
+            admissionHints: admissionHints,
+            ruleProvenance: ruleProvenance,
+            heuristicReasons: heuristicReasons,
+            deferredReason: deferredReason
+        )
     }
 }
 

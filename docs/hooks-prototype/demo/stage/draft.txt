@@ -1,0 +1,6 @@
+Launch post, draft 3 (not saved)
+
+Hooks let a script say yes, no,
+or "put it over there" before
+OmniWM acts on a window.
+
