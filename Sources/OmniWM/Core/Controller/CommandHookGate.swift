@@ -12,11 +12,19 @@ final class CommandHookGate {
 
     private struct Parked {
         let command: PendingCommand
-        let worldSeq: UInt64
-        let focusIntentSeq: UInt64?
+        let fence: Fence
     }
 
-    private static let fencedDomains: InvalidationDomain = [.workspace, .layout, .focus]
+    private struct Fence: Equatable {
+        let focusedToken: WindowToken?
+        let activeWorkspaceId: WorkspaceDescriptor.ID?
+
+        @MainActor
+        init(_ controller: WMController) {
+            focusedToken = controller.workspaceManager.selectedManagedToken
+            activeWorkspaceId = controller.hookActiveWorkspace?.id
+        }
+    }
 
     private weak var controller: WMController?
     private var pending: [HookWaitID: Parked] = [:]
@@ -31,16 +39,13 @@ final class CommandHookGate {
             perform(command, controller: controller)
             return
         }
-        let payload = CommandHookPayload(descriptor, controller: controller)
+        let fence = Fence(controller)
+        let payload = CommandHookPayload(descriptor, focusedToken: fence.focusedToken, controller: controller)
         switch controller.hookDispatcher.gate(payload, reply: { .command($0, $1) }) {
         case .unhooked:
             perform(command, controller: controller)
         case let .pending(id):
-            pending[id] = Parked(
-                command: command,
-                worldSeq: controller.workspaceManager.worldSeq,
-                focusIntentSeq: controller.intentLedger.newestFocusIntentIssuedAtSeq()
-            )
+            pending[id] = Parked(command: command, fence: fence)
         }
     }
 
@@ -48,9 +53,7 @@ final class CommandHookGate {
         guard let controller, let parked = pending.removeValue(forKey: id) else { return }
         switch decision {
         case .allow:
-            guard controller.workspaceManager.isSeqEpochCurrent(parked.worldSeq, domains: Self.fencedDomains),
-                  controller.intentLedger.newestFocusIntentIssuedAtSeq() == parked.focusIntentSeq
-            else {
+            guard Fence(controller) == parked.fence else {
                 reject(parked.command, result: .workspaceStateConflict, trace: "stale")
                 return
             }

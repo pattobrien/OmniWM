@@ -65,10 +65,10 @@ extension WorkspaceChangeHookPayload {
 
 extension CommandHookPayload {
     @MainActor
-    init(_ descriptor: HookCommandDescriptor, controller: WMController) {
+    init(_ descriptor: HookCommandDescriptor, focusedToken: WindowToken?, controller: WMController) {
         self.init(
             command: Command(name: descriptor.name, source: descriptor.source, arguments: descriptor.arguments),
-            focusedWindow: controller.workspaceManager.nativeManagedFocusToken.map(controller.hookWindowFacts(for:)),
+            focusedWindow: focusedToken.map(controller.hookWindowFacts(for:)),
             activeWorkspace: controller.hookActiveWorkspace
         )
     }

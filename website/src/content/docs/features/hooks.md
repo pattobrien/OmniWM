@@ -120,7 +120,7 @@ OmniWM writes one JSON object to the command's stdin and then closes stdin. Keys
 }
 ```
 
-`command.source` is `ipc` for `omniwmctl`, `hotkey` for a hotkey, or `shell` for a workspace-bar widget. `command.arguments` holds each scalar argument of the request as a string under its snake_case name, so `omniwmctl command focus left` sends `{ "direction": "left" }` and `omniwmctl window close <id>` sends `{ "window_id": "<id>" }`. Arguments that are objects, such as a workspace target, are left out. A hotkey sends an empty object. `focused_window` is the window that has focus when the command arrives. `focused_window.title` is `null` when OmniWM has no cached title for the window.
+`command.source` is `ipc` for `omniwmctl`, `hotkey` for a hotkey, or `shell` for a workspace-bar widget. `command.arguments` holds each scalar argument of the request as a string under its snake_case name, so `omniwmctl command focus left` sends `{ "direction": "left" }` and `omniwmctl window close <id>` sends `{ "window_id": "<id>" }`. Arguments that are objects, such as a workspace target, are left out. A hotkey sends an empty object. `focused_window` is the window OmniWM has focused when the command arrives. Commands such as `close-focused-window` act on this window. It stays the same while a dialog or another app holds keyboard focus. `focused_window.title` is `null` when OmniWM has no cached title for the window.
 
 ### post-workspace-change
 
@@ -169,7 +169,7 @@ $ echo $?
 
 JSON output carries the error code `hook_denied` and the text in the response's `reason` field. A denied hotkey does not run its action.
 
-If the focused window, the workspace, or the layout changes while the hook runs, OmniWM does not run the command, even when the hook allows it. `omniwmctl` then reports `workspace_state_conflict`. A protective hook can never approve one window and have the command act on another.
+If OmniWM focuses a different window or switches the active workspace while the hook runs, OmniWM does not run the command, even when the hook allows it. `omniwmctl` then reports `workspace_state_conflict`. A dialog that the hook shows does not count, because OmniWM keeps the same window focused behind it. A protective hook can never approve one window and have the command act on another.
 
 If OmniWM stops while a command waits on a hook, `omniwmctl` reports `ignored_disabled`.
 
